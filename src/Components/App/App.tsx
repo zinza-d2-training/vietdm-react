@@ -1,23 +1,14 @@
 import React from 'react';
 import Assets from "../../Assets";
 import './App.scss';
+import {Link} from "react-router-dom";
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
         <img src={Assets('logo')} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <Link to='auth/register' className="App-link">Register</Link>
       </header>
     </div>
   );

@@ -1,14 +1,16 @@
 import logo from './assets/images/logo.svg';
+import bgLeftAuth from './assets/images/bg_left_auth.png';
 
-const listAssets: Asset = {
-    'logo' : logo
+const listAssets: AssetInterface = {
+    logo : logo,
+    bg_left_auth : bgLeftAuth
 };
 
-interface Asset {
-    logo: string
+interface AssetInterface {
+    [key: string] : string
 }
 
-function Assets(name: keyof Asset) {
+function Assets(name: keyof AssetInterface) {
     return listAssets[name];
 }
 
