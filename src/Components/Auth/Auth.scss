@@ -33,5 +33,17 @@
                 margin: auto;
             }
         }
+
+        .btn-submit-custom {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            justify-content: end;
+            cursor: pointer;
+            background: none;
+            outline: none;
+            border: none;
+            color: #3F51B5;
+        }
     }
 }

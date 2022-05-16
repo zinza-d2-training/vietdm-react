@@ -1,7 +1,10 @@
-import { useForm } from 'react-hook-form';
+import {useForm, Controller} from 'react-hook-form';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
-function Register(){
-    const { register, handleSubmit, watch, formState: { errors } } = useForm();
+function Register() {
+    const {control, register, handleSubmit, formState: {errors}} = useForm();
 
     const onSubmit = (data: unknown) => {
         console.log(data)
@@ -20,11 +23,12 @@ function Register(){
                             className="form-control"
                             id="cccd_number"
                             placeholder="Số CMND/CCCD"
+                            autoComplete="off"
                             {...register("cccd_number", {
                                 required: "Số CMND/CCCD phải được nhập",
-                                pattern : {
+                                pattern: {
                                     value: /^(\d{9}|\d{12})$/i,
-                                    message: 'Số CMND/CCCD không đúng định dạng'
+                                    message: 'Số CMND/CCCD phải có 9 hoặc 12 chữ số'
                                 }
                             })}
                         />
@@ -37,9 +41,10 @@ function Register(){
                             className="form-control"
                             id="email"
                             placeholder="Email"
+                            autoComplete="off"
                             {...register('email', {
                                 required: "Địa chỉ email là bắt buộc",
-                                pattern : {
+                                pattern: {
                                     value: /^[a-z\d._%+-]+@[a-z\d.-]+\.[a-z]{2,4}$/i,
                                     message: 'Địa chỉ email không đúng định dạng'
                                 }
@@ -70,6 +75,7 @@ function Register(){
                             type="text"
                             className="form-control"
                             id="fullname"
+                            autoComplete="off"
                             placeholder="Họ và tên"
                             {...register('fullname', {
                                 required: "Hãy nhập Họ và tên của bạn"
@@ -79,14 +85,28 @@ function Register(){
                     <div className="form-group required">
                         <label htmlFor="birthday">Ngày sinh</label>
                         <p className="error">{errors.birthday?.message}</p>
-                        <input
-                            type="text"
-                            className="form-control"
-                            id="birthday"
-                            placeholder="Ngày sinh"
-                            {...register('birthday', {
-                                required: "Bạn chưa có ngày sinh =))"
-                            })}
+                        <Controller
+                            control={control}
+                            name='birthday'
+                            rules={{required: "Bạn chưa có ngày sinh =))"}}
+                            render={({field}) => (
+                                <DatePicker
+                                    dropdownMode="select"
+                                    className="form-control"
+                                    id="birthday"
+                                    placeholderText="Ngày sinh"
+                                    dateFormat="dd/MM/Y"
+                                    selected={field.value}
+                                    autoComplete="off"
+                                    showMonthDropdown
+                                    showYearDropdown
+                                    adjustDateOnChange
+                                    onChange={field.onChange}
+                                    onKeyDown={(e: Event) => {
+                                        e.preventDefault();
+                                    }}
+                                />
+                            )}
                         />
                     </div>
                     <div className="form-group required">
@@ -101,7 +121,10 @@ function Register(){
                             <option value="other">Khác</option>
                         </select>
                     </div>
-                    <input type="submit" value="Submit" />
+                    <button type="submit" className="btn-submit-custom mt-4">
+                        <span>Tiếp tục</span>
+                        <ArrowForwardIcon/>
+                    </button>
                 </form>
             </div>
         </div>
