@@ -1,5 +1,7 @@
 # Getting Started VietDM application
 
+### This is a project developed for training purposes!
+
 <hr>
 
 ### Install + build + run Application VietDM
