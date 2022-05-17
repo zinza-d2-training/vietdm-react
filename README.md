@@ -7,8 +7,11 @@
 ### Install + build + run Application VietDM
 
 #### Step 1: In terminal, go to the project directory.
+
 #### Step 2: Run: `npm install`
+
 #### Step 3: Run: `npm run build`
+
 #### Step 4: Run: `npm start`
 
 After step 4, we set runs the app in the development mode.\
