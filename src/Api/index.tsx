@@ -6,7 +6,6 @@ import { sha256 } from 'crypto-hash';
 import { parseJson, sleep } from '../Common';
 import JWT from 'expo-jwt';
 import { add } from 'date-fns';
-// import { DateTime } from 'luxon';
 
 const KeyJwt = '046cad5f129f2d2c780bd477cf548df3ebbf3a23';
 const TimeExpireToken = {

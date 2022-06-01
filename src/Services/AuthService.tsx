@@ -1,36 +1,52 @@
-import { LoginParam, GetUserResponse, Error401Interface } from '../Types';
+import {
+  LoginParam,
+  GetUserResponse,
+  LoginResponse,
+  Error401Interface,
+  isError401
+} from '../Types';
 import axios from '../Api';
-import { AxiosError } from 'axios';
 
 const API_URL = 'http://localhost:8080/api/';
+const HOME_URL = '/';
 
-export async function login(param: LoginParam) {
+export async function login(param: LoginParam): Promise<LoginResponse> {
   try {
     const response = await axios.post(API_URL + 'login', param);
     const token = response.data.token;
     const user = response.data.user;
     localStorage.setItem('access_token', token);
-    return { token, user };
-  } catch (error) {
-    const err = error as AxiosError;
-    if (!err.response) {
-      throw err;
+    return {
+      success: true,
+      data: { token, user }
+    };
+  } catch (err) {
+    if (
+      !axios.isAxiosError(err) ||
+      !err.response ||
+      err.response.status != 401 ||
+      !isError401(err.response.data)
+    ) {
+      return {
+        success: false,
+        message: 'No mgs'
+      };
     }
-    if (err.response.status == 401) {
-      const data = err.response.data as Error401Interface;
-      throw data.mgs;
-    }
-    throw err.response;
+    const data: Error401Interface = err.response.data;
+    return {
+      success: false,
+      message: data.mgs
+    };
   }
 }
 
-export async function getInfo() {
+export async function getInfo(): Promise<GetUserResponse> {
   const token = localStorage.getItem('access_token');
 
   if (token == null) {
     return {
       success: false
-    } as GetUserResponse;
+    };
   }
 
   try {
@@ -38,30 +54,31 @@ export async function getInfo() {
     return {
       success: true,
       datas: response.data.users
-    } as GetUserResponse;
-  } catch (error) {
-    const err = error as AxiosError;
-    if (!err.response) {
-      return {
-        success: false
-      } as GetUserResponse;
-    }
-    if (err.response.status == 401) {
-      const data = err.response.data as Error401Interface;
-      if (['expire', 'not_found', 'token_error'].indexOf(data.type as string) != -1) {
-        localStorage.removeItem('access_token');
-      }
+    };
+  } catch (err) {
+    if (
+      !axios.isAxiosError(err) ||
+      !err.response ||
+      err.response.status != 401 ||
+      !isError401(err.response.data)
+    ) {
       return {
         success: false,
-        mgs: data.mgs
-      } as GetUserResponse;
+        mgs: 'No Mgs'
+      };
+    }
+    const data: Error401Interface = err.response.data;
+    if (['expire', 'not_found', 'token_error'].indexOf(data.type as string) != -1) {
+      localStorage.removeItem('access_token');
     }
     return {
-      success: false
-    } as GetUserResponse;
+      success: false,
+      mgs: data.mgs
+    };
   }
 }
 
 export function logout() {
   localStorage.removeItem('access_token');
+  location.href = HOME_URL;
 }

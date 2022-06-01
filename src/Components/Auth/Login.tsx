@@ -2,38 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { Button, TextField, Typography, Link, Alert } from '@mui/material';
 import { Box } from '@mui/system';
-import { LoginParam, PropAttributeInterface } from '../../Types';
+import { Error401Interface, LoginParam, PropAttributeInterface } from '../../Types';
 import { useNavigate } from 'react-router-dom';
 import { LoadingButton } from '@mui/lab';
 import { login } from '../../Services/AuthService';
 import { useAppDispatch } from '../../Store/HookStore';
 import { setLogin } from '../../Store/Slice/UserSlice';
+import * as yup from 'yup';
 import styled from 'styled-components';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 interface FormValues {
   email: string;
   password: string;
-}
-
-interface RuleInterface {
-  email?: {
-    required: boolean | string;
-    pattern?: {
-      value: RegExp;
-      message: string;
-    };
-  };
-  password?: {
-    required: boolean | string;
-    minLength?: {
-      value: number;
-      message: string;
-    };
-    pattern?: {
-      value: RegExp;
-      message: string;
-    };
-  };
 }
 
 const propsAttribute: PropAttributeInterface = {
@@ -49,26 +30,26 @@ const propsAttribute: PropAttributeInterface = {
   }
 };
 
-const RuleValidate: RuleInterface = {
+const MgsValidate = {
   email: {
     required: 'Địa chỉ email là bắt buộc',
-    pattern: {
-      value: /^[a-z\d._%+-]+@[a-z\d.-]+\.[a-z]{2,4}$/i,
-      message: 'Địa chỉ email không đúng định dạng'
-    }
+    pattern: 'Địa chỉ email không đúng định dạng'
   },
   password: {
     required: 'Mật khẩu không được trống',
-    minLength: {
-      value: 8,
-      message: 'Mật khẩu phải chứa ít nhất 8 ký tự'
-    },
-    pattern: {
-      value: /^[^ ]*$/i,
-      message: 'Mật khẩu không được chứa dấu khoảng trắng'
-    }
+    min: 'Mật khẩu phải chứa ít nhất ${min} ký tự',
+    pattern: 'Mật khẩu không được chứa dấu khoảng trắng'
   }
 };
+
+const schemaValidate = yup.object({
+  email: yup.string().email(MgsValidate.email.pattern).required(MgsValidate.email.required),
+  password: yup
+    .string()
+    .min(8, MgsValidate.password.min)
+    .matches(/^[^ ]*$/i, MgsValidate.password.pattern)
+    .required(MgsValidate.password.required)
+});
 
 const FormLogin = styled.div`
   display: flex;
@@ -83,8 +64,10 @@ function Login() {
     handleSubmit,
     watch,
     control,
-    formState: { errors, isValid, isSubmitted }
-  } = useForm<FormValues>();
+    formState: { isValid, isSubmitted }
+  } = useForm<FormValues>({
+    resolver: yupResolver(schemaValidate)
+  });
 
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -95,16 +78,14 @@ function Login() {
     setRequesting(true);
     const paramLogin: LoginParam = { ...param };
 
-    try {
-      const { user } = await login(paramLogin);
+    const response = await login(paramLogin);
+    if (response.success && !!response.data) {
       setRequesting(false);
-      dispatch(setLogin(user));
+      dispatch(setLogin(response.data.user));
       navigate('/user');
-    } catch (err) {
+    } else {
       setRequesting(false);
-      if (typeof err == 'string') {
-        setLoginError(err);
-      }
+      setLoginError(response.message || '');
     }
   };
 
@@ -134,16 +115,10 @@ function Login() {
           }}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Typography variant="h4">Đăng nhập vào tài khoản</Typography>
-            {!!loginError && (
-              <Alert icon={false} severity="error">
-                {loginError}
-              </Alert>
-            )}
             <Controller
               control={control}
               name="email"
-              rules={RuleValidate.email}
-              render={({ field }) => (
+              render={({ field, fieldState: { error } }) => (
                 <TextField
                   fullWidth
                   autoFocus
@@ -152,8 +127,8 @@ function Login() {
                   InputProps={propsAttribute.input}
                   FormHelperTextProps={propsAttribute.helpText}
                   label="Email (*)"
-                  error={!!errors.email}
-                  helperText={errors.email?.message}
+                  error={!!error}
+                  helperText={error?.message}
                   onChange={field.onChange}
                 />
               )}
@@ -161,8 +136,7 @@ function Login() {
             <Controller
               control={control}
               name="password"
-              rules={RuleValidate.password}
-              render={({ field }) => (
+              render={({ field, fieldState: { error } }) => (
                 <TextField
                   fullWidth
                   size="small"
@@ -171,8 +145,8 @@ function Login() {
                   InputProps={propsAttribute.input}
                   FormHelperTextProps={propsAttribute.helpText}
                   label="Password (*)"
-                  error={!!errors.password}
-                  helperText={errors.password?.message}
+                  error={!!error}
+                  helperText={error?.message}
                   onChange={field.onChange}
                 />
               )}
@@ -195,6 +169,11 @@ function Login() {
                 Đăng nhập
               </LoadingButton>
             </Box>
+            {!!loginError && (
+              <Alert icon={false} severity="error">
+                {loginError}
+              </Alert>
+            )}
           </form>
           <Box
             sx={{

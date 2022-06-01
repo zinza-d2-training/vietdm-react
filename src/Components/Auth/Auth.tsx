@@ -3,7 +3,6 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import Register from './Register';
 import Assets from '../../Assets';
 import Login from './Login';
-import Logout from './Logout';
 import styled from 'styled-components';
 
 const AuthBox = styled.div`
@@ -30,7 +29,6 @@ export default function Auth() {
         <Routes>
           <Route path="register" element={<Register />} />
           <Route path="login" element={<Login />} />
-          <Route path="logout" element={<Logout />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BoxRight>

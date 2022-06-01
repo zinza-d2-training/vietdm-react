@@ -1,6 +1,7 @@
 import { useAppSelector } from '../../Store/HookStore';
 import { RootState } from '../../Store';
 import React from 'react';
+import { logout } from '../../Services/AuthService';
 import {
   Box,
   Paper,
@@ -9,9 +10,9 @@ import {
   TableContainer,
   TableRow,
   Typography,
-  TableBody
+  TableBody,
+  Button
 } from '@mui/material';
-import { Link } from 'react-router-dom';
 
 export default function Info() {
   const userData = useAppSelector((state: RootState) => state.users.data);
@@ -29,7 +30,9 @@ export default function Info() {
       <Typography variant="h4" component="div">
         Hi <strong>{userData?.fullname}</strong>
       </Typography>
-      <Link to="/auth/logout">Logout</Link>
+      <Button onClick={logout} variant="contained" color="info">
+        Logout
+      </Button>
       <TableContainer component={Paper} sx={{ mt: 3 }}>
         <Table sx={{ minWidth: 650 }}>
           <TableBody>

@@ -21,9 +21,22 @@ export interface GetUserResponse {
   mgs?: string;
 }
 
+export interface LoginResponse {
+  success: boolean;
+  data?: {
+    token: string;
+    user: UserInterface;
+  };
+  message?: string;
+}
+
 export interface Error401Interface {
   mgs: string;
   type?: string;
+}
+
+export function isError401(payload: unknown): payload is Error401Interface {
+  return Object.prototype.hasOwnProperty.call(payload, 'mgs');
 }
 
 export interface PropAttributeInterface {
