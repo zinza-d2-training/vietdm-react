@@ -3,7 +3,7 @@ const Common = {
     try {
       return JSON.parse(data);
     } catch (e) {
-      return {};
+      return null;
     }
   },
   sleep: (ms: number) => {
@@ -13,4 +13,5 @@ const Common = {
   }
 };
 
-export default Common;
+export const parseJson = Common.parseJson;
+export const sleep = Common.sleep;

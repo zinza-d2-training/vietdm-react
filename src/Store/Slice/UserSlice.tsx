@@ -13,7 +13,7 @@ const userState: userSliceType = {
   data: null
 };
 
-export const userSlice = createSlice({
+const userSlice = createSlice({
   name: 'users',
   initialState: userState,
   reducers: {

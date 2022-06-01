@@ -3,13 +3,14 @@ import MockAdapter from 'axios-mock-adapter';
 import DataUser from './users.json';
 import { LoginParam, UserInterface } from '../Types';
 import { sha256 } from 'crypto-hash';
-import Common from '../Common';
+import { parseJson, sleep } from '../Common';
 import JWT from 'expo-jwt';
-import { DateTime } from 'luxon';
+import { add } from 'date-fns';
+// import { DateTime } from 'luxon';
 
 const KeyJwt = '046cad5f129f2d2c780bd477cf548df3ebbf3a23';
 const TimeExpireToken = {
-  day: 2
+  days: 2
 };
 
 const Mock = new MockAdapter(axios);
@@ -28,9 +29,9 @@ const Response = {
 };
 
 Mock.onPost(API_URL + 'user/info').reply(async ({ data }) => {
-  await Common.sleep(1000);
+  await sleep(1000);
 
-  const param: { token: string } = Common.parseJson(data);
+  const param: { token: string } = parseJson(data);
   type jwtType = { expire: number; hash: string };
   let jwtData: jwtType = {
     expire: 0,
@@ -44,9 +45,10 @@ Mock.onPost(API_URL + 'user/info').reply(async ({ data }) => {
       mgs: 'Token not found or error!'
     });
   }
-  const date = DateTime.now().setZone('Asia/Ho_Chi_Minh');
 
-  if (date.toMillis() > jwtData.expire) {
+  const date = new Date();
+
+  if (date.getTime() > jwtData.expire) {
     return Response.error401({
       type: 'expire',
       mgs: 'Token has expire'
@@ -76,9 +78,11 @@ Mock.onPost(API_URL + 'user/info').reply(async ({ data }) => {
 });
 
 Mock.onPost(API_URL + 'login').reply(async ({ data }) => {
-  await Common.sleep(1000);
+  await sleep(1000);
+  const dateNow = new Date();
+  const date = add(dateNow, TimeExpireToken);
 
-  const param: LoginParam = Common.parseJson(data);
+  const param: LoginParam = parseJson(data);
   const passwordHash = await sha256(param.password);
   const user = DataUser.find((item) => {
     return item.email == param.email && item.password == passwordHash;
@@ -88,16 +92,24 @@ Mock.onPost(API_URL + 'login').reply(async ({ data }) => {
     return Response.error401('Email or Password not correct!');
   }
 
-  const date = DateTime.now().setZone('Asia/Ho_Chi_Minh').plus(TimeExpireToken);
   const token = JWT.encode(
     {
       hash: user.hash,
-      expire: date.toMillis()
+      expire: date.getTime()
     },
     KeyJwt
   );
+  const responUser: UserInterface = {
+    id: user.id,
+    hash: user.hash,
+    email: user.email,
+    fullname: user.fullname,
+    birthday: user.birthday,
+    address: user.address
+  };
   return Response.success({
-    token
+    token,
+    user: responUser
   });
 });
 

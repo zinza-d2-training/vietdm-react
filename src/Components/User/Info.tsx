@@ -1,31 +1,55 @@
 import { useAppSelector } from '../../Store/HookStore';
 import { RootState } from '../../Store';
 import React from 'react';
+import {
+  Box,
+  Paper,
+  Table,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Typography,
+  TableBody
+} from '@mui/material';
 import { Link } from 'react-router-dom';
 
 export default function Info() {
   const userData = useAppSelector((state: RootState) => state.users.data);
+
+  if (userData == null) {
+    return (
+      <Box sx={{ m: 3 }}>
+        <Typography variant="h4">Đang lấy dữ liệu ...</Typography>
+      </Box>
+    );
+  }
+
   return (
-    <div
-      style={{
-        marginTop: '1rem',
-        marginLeft: '1rem'
-      }}>
-      <h3>Hi {userData?.fullname}</h3>
-      <Link to="/auth/logout" className="mtb-3 d-flex">
-        Logout
-      </Link>
-      <ul
-        style={{
-          paddingLeft: '1rem'
-        }}>
-        <li>id: {userData?.id}</li>
-        <li>hash: {userData?.hash}</li>
-        <li>email: {userData?.email}</li>
-        <li>fullname: {userData?.fullname}</li>
-        <li>birthday: {userData?.birthday}</li>
-        <li>address: {userData?.address}</li>
-      </ul>
-    </div>
+    <Box sx={{ m: 3 }}>
+      <Typography variant="h4" component="div">
+        Hi <strong>{userData?.fullname}</strong>
+      </Typography>
+      <Link to="/auth/logout">Logout</Link>
+      <TableContainer component={Paper} sx={{ mt: 3 }}>
+        <Table sx={{ minWidth: 650 }}>
+          <TableBody>
+            <TableRow>
+              <TableCell>id</TableCell>
+              <TableCell>hash</TableCell>
+              <TableCell>email</TableCell>
+              <TableCell>fullname</TableCell>
+              <TableCell>birthday</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>{userData?.id}</TableCell>
+              <TableCell>{userData?.hash}</TableCell>
+              <TableCell>{userData?.email}</TableCell>
+              <TableCell>{userData?.fullname}</TableCell>
+              <TableCell>{userData?.birthday}</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Box>
   );
 }
