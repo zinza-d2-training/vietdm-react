@@ -1,0 +1,29 @@
+[
+  {
+    "id": 1,
+    "hash": "e2122426",
+    "email": "user1@example.com",
+    "password": "ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f",
+    "fullname": "User 1 Test",
+    "birthday": "19/5/2022",
+    "address": "Address 1, Fake Address"
+  },
+  {
+    "id": 2,
+    "hash": "5fd848e8",
+    "email": "user2@example.com",
+    "password": "ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f",
+    "fullname": "User 2 Test",
+    "birthday": "18/4/2022",
+    "address": "Address 2, Fake Address"
+  },
+  {
+    "id": 3,
+    "hash": "824e916d",
+    "email": "user3@example.com",
+    "password": "ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f",
+    "fullname": "User 3 Test",
+    "birthday": "17/3/2022",
+    "address": "Address 2, Fake Address"
+  }
+]
