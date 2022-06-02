@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import { Button, TextField, Typography, Link, Alert } from '@mui/material';
+import { Button, TextField, Typography, Alert } from '@mui/material';
 import { Box } from '@mui/system';
-import { Error401Interface, LoginParam, PropAttributeInterface } from '../../Types';
-import { useNavigate } from 'react-router-dom';
+import { LoginParam, PropAttributeInterface } from '../../Types';
+import { Link, useNavigate } from 'react-router-dom';
 import { LoadingButton } from '@mui/lab';
 import { login } from '../../Services/AuthService';
 import { useAppDispatch } from '../../Store/HookStore';
@@ -159,7 +159,16 @@ function Login() {
                 mb: 1,
                 mt: 1
               }}>
-              <Link href="#">Quên mật khẩu?</Link>
+              <Button
+                component={Link}
+                to="/auth/forgot-password"
+                variant="text"
+                color="primary"
+                sx={{
+                  textDecoration: 'none'
+                }}>
+                Quên mật khẩu?
+              </Button>
               <LoadingButton
                 type="submit"
                 loading={requesting}
