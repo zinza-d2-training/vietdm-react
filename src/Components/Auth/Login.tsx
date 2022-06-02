@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import { Button, TextField, Typography, Alert } from '@mui/material';
+import { Button, TextField, Typography, Alert, Stack } from '@mui/material';
 import { Box } from '@mui/system';
 import { LoginParam, PropAttributeInterface } from '../../Types';
 import { Link, useNavigate } from 'react-router-dom';
@@ -9,7 +9,6 @@ import { login } from '../../Services/AuthService';
 import { useAppDispatch } from '../../Store/HookStore';
 import { setLogin } from '../../Store/Slice/UserSlice';
 import * as yup from 'yup';
-import styled from 'styled-components';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 interface FormValues {
@@ -51,14 +50,6 @@ const schemaValidate = yup.object({
     .required(MgsValidate.password.required)
 });
 
-const FormLogin = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  flex-direction: column;
-`;
-
 function Login() {
   const {
     handleSubmit,
@@ -99,7 +90,7 @@ function Login() {
   }, [watch]);
 
   return (
-    <FormLogin>
+    <Stack justifyContent="center" alignItems="center" height="100%">
       <Box
         sx={{
           overflow: 'hidden auto',
@@ -192,7 +183,8 @@ function Login() {
           </Box>
           <Button
             fullWidth
-            href="#"
+            component={Link}
+            to="/auth/register"
             variant="outlined"
             color="success"
             sx={{
@@ -203,7 +195,7 @@ function Login() {
           </Button>
         </Box>
       </Box>
-    </FormLogin>
+    </Stack>
   );
 }
 
