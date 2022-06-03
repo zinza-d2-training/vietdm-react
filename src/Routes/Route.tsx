@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
-import App from '../Components/App/App';
-import Auth from '../Components/Auth/Auth';
+import App from '../Components/App';
+import Auth from '../Components/Auth';
 import User from '../Components/User';
 
 function ListRoutes() {
