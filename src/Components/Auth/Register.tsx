@@ -21,13 +21,19 @@ import { DatePicker, LoadingButton, LocalizationProvider } from '@mui/lab';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import viLocale from 'date-fns/locale/vi';
 
+const enum Gender {
+  Male = 'male',
+  Female = 'female',
+  Other = 'other'
+}
+
 interface FormValues {
   cccd_number: string;
   email: string;
   password: string;
   fullname: string;
   birthday: string;
-  gender: 'male' | 'female' | 'other';
+  gender: Gender;
 }
 
 const propsAttribute: PropAttributeInterface = {
@@ -89,7 +95,7 @@ function Register() {
       password: '',
       fullname: '',
       birthday: '01/01/1990',
-      gender: 'male'
+      gender: Gender.Male
     }
   });
 
@@ -219,9 +225,9 @@ function Register() {
                 <FormControl fullWidth error={!!error} size="small" sx={{ mt: 1, mb: 0.5 }}>
                   <InputLabel id="label_gender">Giới tính (*)</InputLabel>
                   <Select labelId="label_gender" id="gender" label="Giới tính (*)" {...field}>
-                    <MenuItem value="male">Nam</MenuItem>
-                    <MenuItem value="female">Nữ</MenuItem>
-                    <MenuItem value="other">Khác</MenuItem>
+                    <MenuItem value={Gender.Male}>Nam</MenuItem>
+                    <MenuItem value={Gender.Female}>Nữ</MenuItem>
+                    <MenuItem value={Gender.Other}>Khác</MenuItem>
                   </Select>
                   <FormHelperText>{error?.message}</FormHelperText>
                 </FormControl>
